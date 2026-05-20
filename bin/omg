@@ -57,7 +57,7 @@ if [ "$MODE" = "help" ]; then
     exit 0
 fi
 
-# 하네스 모드 (tmux + HUD)
+# 하네스 모드 (tmux + HUD) - 직접 grok 실행
 SESSION_NAME="${SESSION_PREFIX}-${MODE}"
 
 # 이미 세션이 있으면 attach
@@ -69,8 +69,8 @@ fi
 
 echo "🚀 OMG (Oh My Grok) 세션 시작: $SESSION_NAME (모드: $MODE)"
 
-# tmux 세션 생성
-tmux new-session -d -s "$SESSION_NAME" -n main
+# tmux 세션을 grok 명령어로 직접 시작 (send-keys 대신)
+tmux new-session -d -s "$SESSION_NAME" -n main "grok"
 
 # HUD 설정
 tmux set-option -t "$SESSION_NAME" status on
@@ -90,9 +90,6 @@ if [ -f "$STATUSLINE_PATH" ]; then
 else
     tmux set-option -t "$SESSION_NAME" status-right "#[fg=yellow]SuperGrok Heavy#[default]"
 fi
-
-# 메인 pane에서 grok 실행 (하네스 모드)
-tmux send-keys -t "$SESSION_NAME":main 'grok' C-m
 
 # attach
 tmux attach-session -t "$SESSION_NAME"
