@@ -1,0 +1,98 @@
+#!/bin/bash
+#
+# OMG - Oh My Grok (oh-my-grok-build)
+# 
+# Usage:
+#   omg                  → 네이티브 Grok Build (기본)
+#   omg madmax           → 하네스 + tmux HUD (madmax 모드)
+#   omg heavy            → 하네스 + tmux HUD (heavy 모드)
+#   omg review           → 하네스 + tmux HUD (review 모드)
+#   omg setup            → 초기 설정
+#   omg doctor           → 환경 점검
+#
+
+SESSION_PREFIX="grok"
+MODE=${1:-help}
+
+# setup 명령어
+if [ "$MODE" = "setup" ]; then
+    echo "⚙️  OMG 초기 설정을 시작합니다..."
+    
+    mkdir -p "$HOME/.config/oh-my-grok-build/tmux"
+    
+    if [ -f "$(dirname "$0")/../tmux/statusline.sh" ]; then
+        cp "$(dirname "$0")/../tmux/statusline.sh" "$HOME/.config/oh-my-grok-build/tmux/"
+        chmod +x "$HOME/.config/oh-my-grok-build/tmux/statusline.sh"
+    fi
+    
+    echo "session_start=$(date +%s)" > "$HOME/.sgb/tmux/session_start.txt"
+    
+    echo "✅ OMG 초기 설정 완료!"
+    echo ""
+    echo "사용법:"
+    echo "  grok              # 네이티브 Grok Build (권장)"
+    echo "  omg madmax        # 하네스 + tmux HUD"
+    echo "  omg doctor        # 환경 점검"
+    exit 0
+fi
+
+# 네이티브 Grok Build (grok 명령어 사용 권장)
+if [ "$MODE" = "native" ]; then
+    echo "🚀 네이티브 Grok Build 시작"
+    exec grok build
+fi
+
+# help (기본 동작)
+if [ "$MODE" = "help" ]; then
+    echo "OMG (Oh My Grok) - Grok Build 하네스"
+    echo ""
+    echo "사용법:"
+    echo "  grok              # 네이티브 Grok Build (권장)"
+    echo "  omg madmax        # 하네스 + tmux HUD"
+    echo "  omg heavy"
+    echo "  omg review"
+    echo "  omg setup         # 초기 설정"
+    echo "  omg doctor        # 환경 점검"
+    echo "  omg remove        # 하네스 제거"
+    exit 0
+fi
+
+# 하네스 모드 (tmux + HUD)
+SESSION_NAME="${SESSION_PREFIX}-${MODE}"
+
+# 이미 세션이 있으면 attach
+if tmux has-session -t "$SESSION_NAME" 2>/dev/null; then
+    echo "🔗 기존 OMG 세션 '$SESSION_NAME'에 연결합니다..."
+    tmux attach-session -t "$SESSION_NAME"
+    exit 0
+fi
+
+echo "🚀 OMG (Oh My Grok) 세션 시작: $SESSION_NAME (모드: $MODE)"
+
+# tmux 세션 생성
+tmux new-session -d -s "$SESSION_NAME" -n main
+
+# HUD 설정
+tmux set-option -t "$SESSION_NAME" status on
+tmux set-option -t "$SESSION_NAME" status-interval 3
+tmux set-option -t "$SESSION_NAME" status-left-length 70
+tmux set-option -t "$SESSION_NAME" status-right-length 120
+
+# Status bar 스타일
+tmux set-option -t "$SESSION_NAME" status-bg colour235
+tmux set-option -t "$SESSION_NAME" status-fg colour250
+tmux set-option -t "$SESSION_NAME" status-left "#[fg=green,bold]OMG #[fg=cyan]$MODE#[default]  "
+
+# 오른쪽 HUD (statusline.sh 연결)
+STATUSLINE_PATH="$(dirname "$0")/../tmux/statusline.sh"
+if [ -f "$STATUSLINE_PATH" ]; then
+    tmux set-option -t "$SESSION_NAME" status-right "#($STATUSLINE_PATH)"
+else
+    tmux set-option -t "$SESSION_NAME" status-right "#[fg=yellow]SuperGrok Heavy#[default]"
+fi
+
+# 메인 pane에서 grok build 실행 (하네스 모드)
+tmux send-keys -t "$SESSION_NAME":main 'grok build' C-m
+
+# attach
+tmux attach-session -t "$SESSION_NAME"

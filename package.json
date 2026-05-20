@@ -1,0 +1,36 @@
+{
+  "name": "oh-my-grok-build",
+  "version": "0.4.0",
+  "description": "ACP-powered full orchestration harness for official Grok Build CLI (SuperGrok Heavy)",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "ts-node src/index.ts",
+    "setup": "node scripts/setup.js"
+  },
+  "keywords": [
+    "grok-build",
+    "xai",
+    "super-grok",
+    "orchestration",
+    "multi-agent",
+    "harness"
+  ],
+  "author": "Yeezi (based on oh-my-claudecode & oh-my-codex patterns)",
+  "license": "MIT",
+  "dependencies": {
+    "chalk": "^5.3.0",
+    "commander": "^12.0.0",
+    "fs-extra": "^11.2.0"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^11.0.4",
+    "@types/node": "^20.12.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.5"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}
