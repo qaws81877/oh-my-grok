@@ -16,7 +16,7 @@ if [ -d "oh-my-grok-build" ]; then
     git pull
 else
     echo "📥 레포지토리 클론 중..."
-    git clone https://github.com/Yeezi/oh-my-grok-build.git
+    git clone https://github.com/qaws81877/oh-my-grok.git oh-my-grok-build
     cd oh-my-grok-build
 fi
 
