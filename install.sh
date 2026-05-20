@@ -2,7 +2,7 @@
 #
 # OMG (Oh My Grok) - One-line Installer
 # Usage:
-#   curl -fsSL https://raw.githubusercontent.com/Yeezi/oh-my-grok-build/main/install.sh | bash
+#   curl -fsSL https://raw.githubusercontent.com/qaws81877/oh-my-grok/main/install.sh | bash
 #
 
 set -e
@@ -21,6 +21,7 @@ else
 fi
 
 # 2. npm 의존성 설치
+
 echo "📦 의존성 설치 중..."
 npm install
 
