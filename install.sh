@@ -1,15 +1,13 @@
 #!/bin/bash
 #
 # OMG (Oh My Grok) - One-line Installer
-# Usage:
-#   curl -fsSL https://raw.githubusercontent.com/qaws81877/oh-my-grok/main/install.sh | bash
 #
 
 set -e
 
 echo "🚀 OMG (Oh My Grok) 설치 시작..."
 
-# 1. 레포 클론 또는 업데이트
+# 1. 레포 클론
 if [ -d "oh-my-grok-build" ]; then
     echo "📁 기존 디렉토리 발견. 업데이트 중..."
     cd oh-my-grok-build
@@ -21,7 +19,6 @@ else
 fi
 
 # 2. npm 의존성 설치
-
 echo "📦 의존성 설치 중..."
 npm install
 
@@ -31,7 +28,7 @@ mkdir -p "$HOME/.local/bin"
 cp bin/omg "$HOME/.local/bin/omg"
 chmod +x "$HOME/.local/bin/omg"
 
-# 4. PATH 등록 (zshrc / bashrc)
+# 4. PATH 등록
 SHELL_RC="$HOME/.zshrc"
 if [ -f "$HOME/.bashrc" ] && [ ! -f "$HOME/.zshrc" ]; then
     SHELL_RC="$HOME/.bashrc"
